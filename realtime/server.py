@@ -1,13 +1,14 @@
 # code=utf-8
 
 import os
+import json
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
 from tornado.options import define, options
 
 from service.message import Message
-from view.blogView import IndexHandler
+from view.blogView import IndexHandler, BlogHandler
 from view.uerView import LoginHandler
 from view.uiModuleView import HeadUIModule
 
@@ -22,6 +23,7 @@ class Application(tornado.web.Application):
 
         handlers = [
             (r'/', IndexHandler),
+            (r"/blog/([^/]+)", BlogHandler),
             (r'/login', LoginHandler)
         ]
 
@@ -39,15 +41,12 @@ class Application(tornado.web.Application):
 
         super(Application, self).__init__(handlers, **settings)
 
-        self.user_list = {
-            '1': {'username': 'pom', 'password': 'pom'},
-            '2': {'username': 'nash', 'password': 'nash'}
-        }
+        # 启动时加载，后续数据全站缓存中，不在写回文本
+        with open('api/user.json', 'r') as f:
+            self.user_dict = json.load(f)
 
-        self.blog_list = [
-            {'id': 1, 'title': u'雨滴', 'content': u'我听见下课钟声响起', 'user': 'admin',
-             'comment': [{'user': 'mugbya', 'content': u'测试'}]}]
-        self.comment_list = []
+        with open('api/blog.json', 'r') as f:
+            self.blog_dict = json.load(f)
 
 if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(Application())

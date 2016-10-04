@@ -19,14 +19,14 @@ class LoginHandler(BaseHandler):
 
         # 检测用户名和密码
         login_user = None
-        for user in self.application.user_list:
-            if username == self.application.user_list[user]['username']:
+        for user in self.application.user_dict:
+            if username == self.application.user_dict[user]['username']:
                 login_user = user
                 break
         if not login_user:
             return self.finish('用户名或密码错误')
 
-        if password != self.application.user_list[login_user]['password']:
+        if password != self.application.user_dict[login_user]['password']:
             return self.finish('用户名或密码错误')
 
         # 一个token对应一个已经登录的用户
@@ -35,6 +35,5 @@ class LoginHandler(BaseHandler):
 
         next_url = self.get_body_argument('next', None)
         if next_url:
-            print(next_url)
             return self.redirect(next_url)
         return self.finish('ok')

@@ -35,7 +35,9 @@ class BaseHandler(tornado.web.RequestHandler):
         # 根据token得到绑定的用户id
         if token and token in self.__TOKEN_LIST:
             user_id = self.__TOKEN_LIST[token]
-            return self.application.user_list[user_id]
+            user = self.application.user_dict[user_id]
+            user.update({'id': user_id})
+            return user
 
         # 没有找到就返回none, 表示该用户没有登录
         return None
