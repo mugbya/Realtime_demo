@@ -8,8 +8,10 @@ import tornado.ioloop
 from tornado.options import define, options
 
 from service.message import Message
+from service.base import BaseHandler
 from view.blogView import IndexHandler, BlogHandler
 from view.uerView import LoginHandler
+from view.messageView import MessageHandler
 from view.uiModuleView import HeadUIModule
 
 define("port", default=8000, help="run on the given port", type=int)
@@ -19,10 +21,14 @@ class Application(tornado.web.Application):
 
     def __init__(self):
 
+        self.message = Message(self)
+
         handlers = [
             (r'/', IndexHandler),
             (r"/blog/([^/]+)", BlogHandler),
-            (r'/login', LoginHandler)
+            (r'/login', LoginHandler),
+            (r'/message/status', MessageHandler),
+            (r".*", BaseHandler)
         ]
 
         settings = dict(

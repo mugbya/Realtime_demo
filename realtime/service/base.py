@@ -41,3 +41,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
         # 没有找到就返回none, 表示该用户没有登录
         return None
+
+    def get(self, *args, **kwargs):
+        return self.render('404.html')

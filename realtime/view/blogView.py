@@ -1,5 +1,6 @@
 # code = utf-8
-import json
+import os
+import binascii
 import tornado.web
 from service.base import BaseHandler
 
@@ -39,9 +40,7 @@ class BlogHandler(BaseHandler):
         if message:
             # 查看消息时,将当前消息置为已读
             message_id = message[0].decode('utf-8')
-            for message in self.application.messages:
-                if message_id == message['id']:
-                    message['status'] = 1
+            self.application.message.read_message(message_id)
 
         if slug in self.application.blog_dict:
             blog_entry = blog_dict[slug]
@@ -58,7 +57,7 @@ class BlogHandler(BaseHandler):
 
     def post(self, slug, *args, **kwargs):
         '''
-        保存评论
+        保存评论, 监听消息
         :param args:
         :param kwargs:
         :return:
@@ -66,6 +65,22 @@ class BlogHandler(BaseHandler):
         user_info = self.current_user
         content = self.get_body_argument('content')
 
+        blog = self.application.blog_dict[slug]
+        # 保存评论
         self.application.blog_dict[slug]['comment'].append({'author': user_info['id'], "content": content})
+
+        # 更新消息
+        if blog['author'] != user_info['id']:
+            # 他人评论需要推送消息
+            message = {
+                'id': binascii.hexlify(os.urandom(16)).decode("utf8"),
+                'eventSource': slug,
+                'eventType': 1,
+                "data": blog['title'],
+                "trigger": user_info['id'],
+                "notice": blog['author'],
+                "status": 0
+            }
+            self.application.message.add_message(message)
 
         return self.redirect('/blog/' + slug)

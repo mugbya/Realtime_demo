@@ -43,3 +43,8 @@ a {
 .message-line{
     padding-left: 15px;
 }
+
+.message-line-brown{
+    padding-left: 15px;
+    color: brown;
+}

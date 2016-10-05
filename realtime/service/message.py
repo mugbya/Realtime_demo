@@ -3,11 +3,14 @@ import json
 from service.base import BaseHandler
 
 
-class Message(BaseHandler):
+class Message(object):
     '''
     定义消息类
     '''
     callables = []
+
+    def __init__(self, application):
+        self.application = application
 
     def register(self, callback):
         '''
@@ -30,8 +33,15 @@ class Message(BaseHandler):
 
         self.notify_callbacks(user)
 
-    def read_message(self, message):
-        pass
+    def read_message(self, message_id):
+        '''
+        读取消息
+        :param message_id:
+        :return:
+        '''
+        for message in self.application.messages:
+            if message_id == message['id']:
+                message['status'] = 1
 
     def notify_callbacks(self, user):
         '''
@@ -56,8 +66,8 @@ class Message(BaseHandler):
             if user['id'] == message['notice']:
                 if not message['status']:
                     unread += 1
-                user = user_dict.get(message['trigger'], {})
-                message['username'] = user['username']
+                trigger_user = user_dict.get(message['trigger'], {})
+                message['username'] = trigger_user['username']
                 message_list.append(message)
 
         return message_list, unread
