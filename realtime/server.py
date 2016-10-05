@@ -19,8 +19,6 @@ class Application(tornado.web.Application):
 
     def __init__(self):
 
-        self.message = Message()
-
         handlers = [
             (r'/', IndexHandler),
             (r"/blog/([^/]+)", BlogHandler),
@@ -47,6 +45,9 @@ class Application(tornado.web.Application):
 
         with open('api/blog.json', 'r') as f:
             self.blog_dict = json.load(f)
+
+        with open('api/message.json', 'r') as f:
+            self.messages = json.load(f)
 
 if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(Application())

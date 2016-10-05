@@ -35,6 +35,14 @@ class BlogHandler(BaseHandler):
         blog_entry = None
         blog_dict = self.application.blog_dict
 
+        message = self.request.arguments.get('message', None)
+        if message:
+            # 查看消息时,将当前消息置为已读
+            message_id = message[0].decode('utf-8')
+            for message in self.application.messages:
+                if message_id == message['id']:
+                    message['status'] = 1
+
         if slug in self.application.blog_dict:
             blog_entry = blog_dict[slug]
             blog_entry.update({'id': slug})
