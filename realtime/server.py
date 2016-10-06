@@ -35,17 +35,16 @@ class Application(tornado.web.Application):
             blog_title=u"Tornado Blog",
             template_path=os.path.join(os.path.dirname(__file__), "webContent/templates"),
             static_path=os.path.join(os.path.dirname(__file__), "webContent/static"),
-            # ui_modules=my_uimodules,
             ui_modules={'Head': HeadUIModule},
             # xsrf_cookies=True,
-            cookie_secret='1111111111111111111111111111111111111111111111111',
+            cookie_secret='9876543210',
             login_url='/login',
             debug=True,
         )
 
         super(Application, self).__init__(handlers, **settings)
 
-        # 启动时加载，后续数据全站缓存中，不在写回文本
+        # 启动时加载，后续新增数据全在缓存中，不在写回文本
         with open('api/user.json', 'r') as f:
             self.user_dict = json.load(f)
 
