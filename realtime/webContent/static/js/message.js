@@ -27,7 +27,15 @@ function requestInventory() {
 
     websocket.onopen = function (evt) { };
     websocket.onmessage = function(evt) {
-        $('.unread').html('(' + $.parseJSON(evt.data)['unread'] + ')');
+        var unread = $.parseJSON(evt.data)['unread'];
+        if (unread > 0){
+            var span_node = document.createElement('span');
+            var a_node = $('.dropdown-toggle');
+
+            span_node.innerHTML = '(' + unread + ')';
+            a_node.append(span_node);
+        }
+
 
         var message = $.parseJSON(evt.data)['message'];
         var ul_node = $('.dropdown-menu');
@@ -41,7 +49,7 @@ function requestInventory() {
                 + '<a href="/blog/' + message['eventSource']+ '?message=' + message['id']+ '">' + message['data'] + '</a></div>';
         }
 
-        ul_node.append(li_node);
+        ul_node.prepend(li_node);
 
     };
     websocket.onerror = function (evt) { };

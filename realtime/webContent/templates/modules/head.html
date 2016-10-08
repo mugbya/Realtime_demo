@@ -19,9 +19,9 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     我的消息
                                     {% if unread != 0 %}
-                                    <span class="unread">({{ unread }})</span>
+                                    <span >({{ unread }})</span>
                                     {% end %}
-                                    <strong class="caret"></strong></a>
+                                </a>
 
                                 <ul class="dropdown-menu opts__item--message">
                                     {% for message in messages %}
